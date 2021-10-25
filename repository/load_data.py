@@ -1,5 +1,6 @@
 import json
 
+
 from entities.Part import Part
 from entities.Panel import Panel
 """
@@ -11,6 +12,8 @@ class LoadData:
 
     _listParts = []
     _listPanels = []
+    _aux = 0
+
 
     def load_data_json(self,path = None):
         """
@@ -26,27 +29,51 @@ class LoadData:
         if(path != None):
             with open(path) as file:
                 data = json.load(file)
-                self.process_data_json(data)
+                self.process_data_json_iterator(data)
+                print("asdfasdfa")
                 return self._listParts
 
 
         return "Error"
 
 
+    def process_data_json_iterator(self,data):
+        iterator_dict = iter(data.items())
+        while True:
+            try:
+                element = next(iterator_dict)
+            except StopIteration:
+                break
+
+            #print(type(iterator_dict))
+
+            #if (isinstance(element[1],dict)):
+            if (element[0] == 'Parts'):
+
+                self._aux = self._aux + 1
+                print("Parte " + str(self._aux))
+            else:
+                for element_list in element[1]:
+                    self.process_data_json_iterator(element_list)
+
+
+            if isinstance(element[1],list):
+                for element_list in element[1]:
+                    self.process_data_json_iterator(element_list)
+                    #print("lista")
+
+
+
+
+
+    """
     def process_data_json(self, data):
-        come_list_panels = False
-        come_parts_wall = False
+
         if isinstance(data, dict):
             for k, v in data.items():
                 if (k == 'Name') and (v.find("Wall") != -1):
-                    come_list_panels = True
                     continue
-
-                if (k == 'Assemblies') and (come_list_panels):
-                    self.save_panels_in_list(v)
-                    come_parts_wall = True
-                    come_list_panels = False
-                    continue
+                    print(v)
 
                 else:
                     self.process_data_json(v)
@@ -64,6 +91,7 @@ class LoadData:
             newPanel = Panel(id = index)
             self._listPanels.append(newPanel)
 
+    """
 
 
 

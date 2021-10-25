@@ -22,7 +22,9 @@ if __name__ == "__main__":
 
     """
 
-    global_list.globalList = data.load_data_json('data.json')
+    #global_list.globalList = data.load_data_json('data.json')
+
+    list=data.load_data_json('data.json')
 
 
 
@@ -41,8 +43,7 @@ if __name__ == "__main__":
 
 
 
-
-
+    """
 
     # create the application
     myapp = App()
@@ -58,6 +59,7 @@ if __name__ == "__main__":
 
     # start the program
     myapp.mainloop()
+    """
 
 
 
