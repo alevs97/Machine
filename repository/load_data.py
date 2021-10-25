@@ -32,7 +32,6 @@ class LoadData:
 
         return "Error"
 
-    """
 
     def process_data_json(self, data):
         come_list_panels = False
@@ -65,13 +64,12 @@ class LoadData:
             newPanel = Panel(id = index)
             self._listPanels.append(newPanel)
 
-    """
 
 
 
    #def save_part_in_
 
-
+    """
     def process_data_json(self, data):
         if isinstance(data, dict):
             for k, v in data.items():
@@ -92,3 +90,4 @@ class LoadData:
                            part["Processed"],part["Skip"],index + 1 ,part["Flag"])
             self._listParts.append(newPart)
 
+    """
