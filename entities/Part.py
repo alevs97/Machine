@@ -10,10 +10,10 @@ class Part:
     """
 
     def __str__(self):
-        return f'index: {self.index} name: {self.name}, woodType: {self.woodType}' \
-               f' height: {self.height}, processed: {self.processed}, skip: {self.skip}, flag: {self.flag}'
+        return f'index: {self.id} name: {self.name}, woodType: {self.woodType}' \
+               f' height: {self.height}, processed: {self.processed}, id: {self.id}'
 
-    def __init__(self, name, woodType, height, printSections, processed, skip, index , flag):
+    def __init__(self, name, woodType, height, printSections, processed,id):
         """
         Description:
         Constructor of the Part to be process, this part will be inicialize in by the JSON come from RoboFrame
@@ -33,9 +33,7 @@ class Part:
         self.height = height
         self.printSections = printSections
         self.processed = processed
-        self.skip = skip
-        self.index = index
-        self.flag = flag
+        self.id = id
 
     def to_Dict(self):
         """
@@ -51,18 +49,16 @@ class Part:
             'Height': self.height,
             'PrintSections': self.printSections,
             'Processed': self.processed,
-            "Skip": self.skip,
-            "Index": self.index,
-            "Flag": self.flag
+            'id': self.id
         }
 
     # getter method
-    def get_index(self):
-        return self.index
+    def get_id(self):
+        return self.id
 
     # setter method
-    def set_index(self, x):
-        self.index = x
+    def set_id(self, x):
+        self.id = x
 
     # getter method
     def get_skip(self):

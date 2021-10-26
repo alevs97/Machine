@@ -24,7 +24,16 @@ if __name__ == "__main__":
 
     #global_list.globalList = data.load_data_json('data.json')
 
-    list=data.load_data_json('data.json')
+    list=data.load_data_json('6_Walls.json')
+    print("a###############33")
+    for i in list:
+        print(i.__str__())
+        i.print_assemblies()
+        for a in i.list_assemblies:
+            a.print_parts()
+            print(" ")
+
+
 
 
 
