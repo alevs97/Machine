@@ -11,11 +11,6 @@ File related with the data in the project
 
 class LoadData:
 
-    _listParts = []
-    _listPanels = []
-    _listAssemblies = []
-    _aux = 0
-
     _id_panel = 0
     _id_assemblie = 0
     _id_part = 0
@@ -121,10 +116,9 @@ class LoadData:
                 except StopIteration:
                     break
 
-                index = len(self._listAssemblies)
                 new_assemblie = Assemblie(element_dict[1],self._id_assemblie+1)
-                self._id_assemblie = self._id_assemblie +1
-                print(new_assemblie.__str__())
+                self._id_assemblie = self._id_assemblie + 1
+
                 list_parts = next(assemblie)
                 list = self.add_to_list_parts(list_parts[1])
                 new_assemblie.add_list_parts(list)
@@ -145,28 +139,3 @@ class LoadData:
             list_retrieve.append(newPart)
             self._listParts.append(newPart)
         return list_retrieve
-
-
-
-"""    
-    def process_data_json(self, data):
-        if isinstance(data, dict):
-            for k, v in data.items():
-                if k == 'Parts':
-                    self.save_part_in_list(v)
-                else:
-                    self.process_data_json(v)
-        elif isinstance(data, list):
-            for element in data:
-                self.process_data_json(element)
-
-
-    def save_part_in_list(self, parts):
-        for part in parts:
-            index = len(self._listParts)
-            printSection = part["PrintSections"] if "PrintSections" in part else None
-            newPart = Part(part["Name"],part["WoodType"],part["Height"],printSection,
-                           part["Processed"],part["Skip"],index + 1 ,part["Flag"])
-            self._listParts.append(newPart)
-
-    """
