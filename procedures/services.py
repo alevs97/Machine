@@ -20,18 +20,30 @@ class Services:
         self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts = copy.deepcopy(filter_list)
 
     def start_here(self, id_panel, id_assemblie, id_part):
+
+        # Fitler by part
+        list_parts = self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts
+        part = list_parts[id_part]
+        filter_list_parts = list(filter(lambda x: x.get_id() >= part.get_id(), list_parts))
+        for i in filter_list_parts:
+            print(i)
+
+
+        #Fitler by assemblies
+        list_assemblies = self.list_global.globalList[id_panel].list_assemblies
+        assemblie = list_assemblies[id_assemblie]
+        filter_list_assemblies = list(filter(lambda x: x.get_id() >= assemblie.get_id(), list_assemblies))
+        for i in filter_list_assemblies:
+            print(i)
+
+
+        # Filter by panels
         list_panels = self.list_global.globalList
+        panel = list_panels[id_panel]
+        filter_list_panels = list(filter(lambda x: x.get_id() >= panel.get_id(),list_panels))
+        for i in filter_list_panels:
+            print(i)
 
-    """
-    def skip_here(self, index):
-
-        list_parts = copy.deepcopy(self.globalList.globalList)
-        print("Piece to skip : " + index)
-
-        map_list = list(map(lambda x: x.set_skip(True) if x.get_index() == int(index) else x, list_parts))
-        filter_list = list(filter(lambda x: False if x.get_skip() else True, list_parts))
-
-        self.globalList.globalList = copy.deepcopy(filter_list)
-
-        self.globalList.update_list(filter_list)
-    """
+        self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts = copy.deepcopy(filter_list_parts)
+        self.list_global.globalList[id_panel].list_assemblies = copy.deepcopy(filter_list_assemblies)
+        self.list_global.globalList = copy.deepcopy(filter_list_panels)
