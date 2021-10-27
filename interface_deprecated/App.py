@@ -3,7 +3,7 @@ from tkinter import ttk
 import tkinter as tk
 from interface_deprecated.ScrollableFrame import ScrollableFrame
 from procedures.services import Services
-from entities.GlobalListPartSingleton import GlobalListPartSingleton
+from entities.GlobalListPanelsSingleton import GlobalListPartSingleton
 
 
 class App(tk.Frame):

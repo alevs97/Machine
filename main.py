@@ -1,7 +1,9 @@
-from interface.App import App
-from entities.GlobalListPartSingleton import GlobalListPartSingleton
+import time
+from interface.App_new import App_new
+from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from repository.load_data import LoadData
-from procedures.services import Services
+
+# from procedures.services import Services
 """
 Main class
 """
@@ -10,8 +12,7 @@ if __name__ == "__main__":
 
     # Instances
     data = LoadData()
-    services = Services()
-    global_list = GlobalListPartSingleton()
+    global_list = GlobalListPanelsSingleton()
 
     """
     #Charging part in the singleton list
@@ -22,35 +23,24 @@ if __name__ == "__main__":
 
     """
 
-    #global_list.globalList = data.load_data_json('data.json')
+    global_list.globalList = data.load_data_json('6_Walls.json')
 
-    list=data.load_data_json('6_Walls.json')
+    # list=data.load_data_json('6_Walls.json')
     print("###############")
-    for i in list:
+    for i in global_list.globalList:
         print(i.__str__())
         i.print_assemblies()
         for a in i.list_assemblies:
             a.print_parts()
             print(" ")
 
+    my_app = App_new()
+    time.sleep(1)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    my_app.master.title("My Do-Nothing Application")
+    my_app.main_frame()
+    my_app.grid()
+    my_app.mainloop()
 
     """
 
@@ -69,6 +59,3 @@ if __name__ == "__main__":
     # start the program
     myapp.mainloop()
     """
-
-
-

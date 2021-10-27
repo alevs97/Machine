@@ -1,10 +1,7 @@
-from copy import copy
-from repository.load_data import LoadData
 
+class GlobalListPanelsSingleton:
 
-class GlobalListPartSingleton:
-
-    class __GlobalListPart:
+    class __GlobalListPanels:
         """
         Private class
         """
@@ -21,9 +18,9 @@ class GlobalListPartSingleton:
         """
         Create object
         """
-        if not GlobalListPartSingleton.instante:
-            GlobalListPartSingleton.instante = GlobalListPartSingleton.__GlobalListPart()
-        return GlobalListPartSingleton.instante
+        if not GlobalListPanelsSingleton.instante:
+            GlobalListPanelsSingleton.instante = GlobalListPanelsSingleton.__GlobalListPanels()
+        return GlobalListPanelsSingleton.instante
 
     def __getattr__(self, global_list):
         return getattr(self.instante, global_list)

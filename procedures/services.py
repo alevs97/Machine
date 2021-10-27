@@ -1,23 +1,28 @@
-from entities.GlobalListPartSingleton import GlobalListPartSingleton
+from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 import copy
 
 class Services:
 
     def __init__(self):
 
-        self.globalList = GlobalListPartSingleton()
+        self.list_global = GlobalListPanelsSingleton()
 
-    def start_here(self, index):
+    def skip_here(self, id_panel, id_assemblie, id_part):
+        list_parts = self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts
+        part = self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts[id_part]
 
-        print("Piece to start here : " + index)
+        print(id_panel)
+        print(id_assemblie)
+        print(id_part)
+        filter_list = list(filter(lambda x: x.get_id() != part.get_id(), list_parts))
+        for i in filter_list:
+            print(i)
+        self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts = copy.deepcopy(filter_list)
 
-        list_parts = copy.deepcopy(self.globalList.globalList)
+    def start_here(self, id_panel, id_assemblie, id_part):
+        list_panels = self.list_global.globalList
 
-        filter_list = list(filter(lambda x: x.get_index() >= int(index), list_parts))
-
-        self.globalList.globalList = copy.deepcopy(filter_list)
-
-
+    """
     def skip_here(self, index):
 
         list_parts = copy.deepcopy(self.globalList.globalList)
@@ -28,4 +33,5 @@ class Services:
 
         self.globalList.globalList = copy.deepcopy(filter_list)
 
-        #self.globalList.update_list(filter_list)
+        self.globalList.update_list(filter_list)
+    """

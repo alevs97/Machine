@@ -10,8 +10,8 @@ class Part:
     """
 
     def __str__(self):
-        return f'index: {self.id} name: {self.name}, woodType: {self.woodType}' \
-               f' height: {self.height}, processed: {self.processed}, id: {self.id}'
+        return f'id: {self.id} name: {self.name}, woodType: {self.woodType}' \
+               f' height: {self.height}, processed: {self.processed}'
 
     def __init__(self, name, woodType, height, printSections, processed,id):
         """

@@ -1,18 +1,19 @@
+
 import tkinter
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 
-from procedures.services import Services
-from entities.GlobalListPartSingleton import GlobalListPartSingleton
+#from procedures.services import Services
+#from entities.GlobalListPanelsSingleton import GlobalListPartSingleton
 
 
 class App(tk.Frame):
 
     def __init__(self, master=None):
         super().__init__(master)
-        self.services = Services()
-        self.list_global = GlobalListPartSingleton()
+        #self.services = Services()
+       # self.list_global = GlobalListPartSingleton()
 
 
     def screen(self):
@@ -69,5 +70,4 @@ class App(tk.Frame):
             if isinstance(l, ttk.Frame):
                 print(type(l))
                 l.destroy()
-
 
