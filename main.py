@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     """
 
-    global_list.globalList = data.load_data_json('6_Walls.json')
+    global_list.globalList = data.load_data_json('data.json')
 
     # list=data.load_data_json('6_Walls.json')
     print("###############")
@@ -46,11 +46,12 @@ if __name__ == "__main__":
 
 
     my_app = App_new(root)
+    my_app.pack(fill="both", expand=1)
+    my_app.config(bg="lightblue")
     time.sleep(1)
 
     my_app.master.title("My Do-Nothing Application")
     my_app.main_frame()
-    my_app.grid()
     my_app.mainloop()
 
     """
