@@ -75,3 +75,19 @@ class Part:
     # setter method
     def set_name(self, x):
         self.name = x
+
+    # getter method
+    def get_wood_type(self):
+        return self.woodType
+
+    # setter method
+    def set_wood_type(self, x):
+        self.woodType = x
+
+    # getter method
+    def get_height(self):
+        return self.height
+
+    # setter method
+    def set_height(self, x):
+        self.height = x

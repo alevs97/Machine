@@ -2,6 +2,9 @@ import time
 from interface.App_new import App_new
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from repository.load_data import LoadData
+from tkinter import *
+from tkinter import ttk
+import tkinter as tk
 
 # from procedures.services import Services
 """
@@ -34,7 +37,15 @@ if __name__ == "__main__":
             a.print_parts()
             print(" ")
 
-    my_app = App_new()
+
+
+    root = Tk()
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    root.geometry(str(width) + "x" + str(height))
+
+
+    my_app = App_new(root)
     time.sleep(1)
 
     my_app.master.title("My Do-Nothing Application")
