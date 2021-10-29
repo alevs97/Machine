@@ -1,5 +1,5 @@
 import json
-
+import copy
 
 from entities.Part import Part
 from entities.Panel import Panel
@@ -66,9 +66,10 @@ class LoadData:
 
 
     def add_to_list_panels(self,list_panels):
-        list_retrieve = []
-        list_assemblies = []
+        list_retrieve = list()
+        list_assemblies = list()
         for panel_dict in list_panels:
+
             new_panel = Panel(id = self._id_panel + 1)
             self._id_panel = self._id_panel + 1
 
@@ -85,27 +86,27 @@ class LoadData:
 
                     if element[0] == "Assemblies":
 
-                        list_assemblies = self.add_to_list_assemblies(element[1])
+                        list_assemblies = copy.deepcopy(self.add_to_list_assemblies(element[1]))
 
                         element = next(panel)
 
                         if element[0] == "Parts":
 
-                            panel_assemblie = self.add_panel_parts_assemblie(element[1])
-                            list_assemblies.append(panel_assemblie)
+                            panel_assemblie_a = copy.deepcopy(self.add_panel_parts_assemblie(element[1]))
+                            list_assemblies.append(panel_assemblie_a)
                             new_panel.add_list_assemblies(list_assemblies)
                             break
 
                     if element[0] == "Parts":
-                        panel_assemblie = self.add_panel_parts_assemblie(element[1])
-                        list_retrieve.append(panel_assemblie)
+                        panel_assemblie_b = copy.deepcopy(self.add_panel_parts_assemblie(element[1]))
+                        list_retrieve.append(panel_assemblie_b)
                         new_panel.add_list_assemblies(list_retrieve)
 
 
             self._listPanels.append(new_panel)
 
     def add_panel_parts_assemblie(self, list_parts):
-        assemblie_panel = Assemblie("Panel",self._id_assemblie + 1)
+        assemblie_panel = Assemblie("Panel Assemble",self._id_assemblie + 1)
         self._id_assemblie = self._id_assemblie + 1
         list = self.add_to_list_parts(list_parts)
         assemblie_panel.add_list_parts(list)

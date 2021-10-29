@@ -8,6 +8,9 @@ class Services:
         self.list_global = GlobalListPanelsSingleton()
 
     def skip_here(self, id_panel, id_assemblie, id_part,index_frame):
+
+
+
         if index_frame == 0:
             list_panels = self.list_global.globalList
             panel = self.list_global.globalList[id_panel]

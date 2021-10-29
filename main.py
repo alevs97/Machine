@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     my_app = App_new(root)
     my_app.pack(fill="both", expand=1)
-    my_app.config(bg="lightblue")
+    #my_app.config(bg="lightblue")
     time.sleep(1)
 
     my_app.master.title("My Do-Nothing Application")
