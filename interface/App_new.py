@@ -1,21 +1,22 @@
 
 from tkinter import *
 from tkinter import ttk
-import tkinter as tk
-import copy
+
 
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from procedures.services import Services
+
 class App_new(Frame):
 
+    item_selected = False
 
     my_list_panels = None
     my_list_assemblies = None
     my_list_parts = None
 
-    id_panel = 0
-    id_assemblie = 0
-    id_part = 0
+    id_panel = None
+    id_assemblie = None
+    id_part = None
 
     frame_list_box = None
 
@@ -26,9 +27,13 @@ class App_new(Frame):
     list_global = GlobalListPanelsSingleton()
     services = Services()
 
+    label_front_button = None
+    label_back_button = None
+    label_skip_button = None
+    label_start_here_button = None
+
     def __int__(self, container, *args, **kwargs):
         super().__init__(self, container, *args, **kwargs)
-
 
     def main_frame(self):
 
@@ -37,7 +42,6 @@ class App_new(Frame):
         self.frame_nort()
         self.frame_east()
         self.frame_center()
-
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
@@ -52,45 +56,107 @@ class App_new(Frame):
     def frame_east(self):
         frame_east = ttk.Frame(self,padding=10)
 
+        # Widgets 1° Column
         ttk.Label(frame_east,text="Testing Label").grid(pady=5,row=0, column=0)
         ttk.Button(frame_east, text="Skip", command=self.service_skip).grid(pady=5,row=1, column=0)
         ttk.Button(frame_east, text="Start Here", command=self.service_start_here).grid(pady=5,row=2, column=0)
+
+        # Widgets 2° Column
+        self.label_skip_button = Label(frame_east, text="You want to skip:")
+        self.label_skip_button .grid(pady=5,row=1, column=1, columnspan=2,sticky="nswe")
+
+        self.label_start_here_button = Label(frame_east, text="You want to start in: ")
+        self.label_start_here_button.grid(pady=5,row=2, column=1, columnspan=2,sticky="nswe")
 
         frame_east.rowconfigure(0, weight=1)
         frame_east.rowconfigure(1, weight=1)
         frame_east.rowconfigure(2, weight=1)
 
-        frame_east.grid(pady=5,row=1, column=2)
+        frame_east.columnconfigure(0, weight=1)
+        frame_east.columnconfigure(1, weight=1)
+        frame_east.columnconfigure(2, weight=1)
+
+
+
+        frame_east.grid(pady=5,row=1, column=2,sticky="nsew")
 
     def frame_nort_west(self):
         ttk.Label(self, text="Hola mundo").grid(pady=5, row=0, column=0)
 
     def frame_nort(self):
-        ttk.Button(self,text="Back",command=self.control_button_back).grid(pady=5, row=0, column=1)
+        frame_nort = ttk.Frame(self,padding=10)
+
+
+        # Widgets in the row -> 1
+        ttk.Button(frame_nort,text="Go to ",command=self.control_go_to).grid(pady=5, row=1, column=2, sticky="s")
+        ttk.Label(frame_nort, text="Job Description JSON: ").grid(pady=5, row=1, column=1, sticky="s")
+        ttk.Button(frame_nort,text="Back",command=self.control_button_back).grid(pady=5, row=1, column=0, sticky="s")
+
+        # Widgets in the row -> 2
+        frame_label_back = Frame(frame_nort, highlightbackground="black", highlightthickness=1, bd=0)
+        frame_label_back.grid(pady=5, row=2, column=0, sticky="nsew")
+
+        self.label_back_button = Label(frame_label_back,text="")
+        self.label_back_button.grid(pady=5,sticky="nsew")
+
+        frame_label_back.columnconfigure(0, weight=1)
+        frame_label_back.rowconfigure(0, weight=1)
+
+
+
+        Label(frame_nort,text=str(self.list_global.job_description),borderwidth=2, relief="groove",padx=15,pady=10)\
+            .grid(pady=5, row=2, column=1,sticky="n")
+
+        frame_label_go_to = Frame(frame_nort, highlightbackground="black", highlightthickness=1, bd= 0)
+        frame_label_go_to.grid(pady=5, row=2, column=2,sticky="nsew")
+
+        self.label_front_button = Label(frame_label_go_to,text="See assemblies in : \n" )
+        self.label_front_button.grid(pady=5, sticky="nsew")
+
+        frame_label_go_to.columnconfigure(0, weight=1)
+        frame_label_go_to.rowconfigure(0, weight=1)
+
+        frame_nort.columnconfigure(0, weight=1)
+        frame_nort.columnconfigure(1, weight=1)
+        frame_nort.columnconfigure(2, weight=1)
+
+        frame_nort.rowconfigure(0, weight=1)
+        frame_nort.rowconfigure(1, weight=1)
+        frame_nort.rowconfigure(2, weight=1)
+
+        frame_nort.grid(pady=5,row=0, column=1,sticky="nsew")
 
     def frame_center(self):
-
         self.render_scroll_frame_panels()
 
-
     def service_skip(self):
-        self.services.skip_here(self.id_panel,self.id_assemblie,self.id_part)
 
-        self.clear_frame()
-        self.render_scroll_frame_parts()
-        self.display_button = False
+        self.services.skip_here(self.id_panel,self.id_assemblie,self.id_part,self.control_back)
+
+        if self.item_selected and self.control_back ==2:
+            self.clear_frame()
+            self.render_scroll_frame_parts()
+        elif self.item_selected and self.control_back == 1:
+            self.clear_frame()
+            self.render_scroll_frame_assemblies()
+        elif self.item_selected and self.control_back == 0:
+            self.clear_frame()
+            self.render_scroll_frame_panels()
+        else:
+            print("Skip invalido")
+
 
     def service_start_here(self):
-        self.services.start_here(self.id_panel,self.id_assemblie,self.id_part)
+
+        self.services.start_here(self.id_panel,self.id_assemblie,self.id_part, self.control_back)
 
         self.clear_frame()
         self.render_scroll_frame_panels()
         self.control_back = 0
-        self.display_button = False
+
 
     #----------------------------------------------------------------------------------
     # ---------------------------------Validation Back Button--------------------------
-
     def control_button_back(self):
         if self.control_back == 1:
             self.go_back_frame()
@@ -98,8 +164,6 @@ class App_new(Frame):
         elif self.control_back == 2:
             self.go_back_assemblie()
             self.control_back = self.control_back - 1
-            self.display_button = False
-
         else:
             print("Variable vacia ")
 
@@ -112,7 +176,21 @@ class App_new(Frame):
         self.clear_frame()
         self.render_scroll_frame_panels()
 
-
+    # ----------------------------------------------------------------------------------
+    # ---------------------------------Button Go to-----------------------------
+    def control_go_to(self):
+        if self.control_back == 0:
+            #self.label_front_button.grid_forget()
+            self.clear_frame()
+            self.render_scroll_frame_assemblies()
+            self.control_back = self.control_back + 1
+        elif self.control_back == 1:
+            #self.label_front_button.grid_forget()
+            self.clear_frame()
+            self.render_scroll_frame_parts()
+            self.control_back = self.control_back + 1
+        else:
+            print("Variable al max")
     #----------------------------------------------------------------------------------
     # ---------------------------------Frames with ListBox-----------------------------
 
@@ -138,7 +216,7 @@ class App_new(Frame):
                                       + line.get_wood_type() + "x" + str(line.height))
 
         #Put it in the grid
-        self.my_list_parts.grid(pady=5, row=1, column=1)
+        self.my_list_parts.grid(pady=5, row=1, column=1,sticky="nsew")
         #Adding the event to navigate
         self.my_list_parts.bind('<Button-1>', self.event_parts)
 
@@ -159,7 +237,7 @@ class App_new(Frame):
         self.frame_list_box.rowconfigure(1, weight=1)
 
         # Put it in the main grid
-        self.frame_list_box.grid(pady=5, row=1, column=1)
+        self.frame_list_box.grid(pady=5, row=1, column=1,sticky="nsew")
 
     def render_scroll_frame_assemblies(self):
         """
@@ -183,7 +261,7 @@ class App_new(Frame):
             self.my_list_assemblies.insert(END, str(line.get_id()) + " - " + line.get_name())
 
         #Punt it in the grid
-        self.my_list_assemblies.grid(pady=5, row=1, column=1)
+        self.my_list_assemblies.grid(pady=5, row=1, column=1,sticky="nsew")
         #Adding the event to navigate
         self.my_list_assemblies.bind('<Button-1>', self.event_assemblies)
 
@@ -204,7 +282,7 @@ class App_new(Frame):
         self.frame_list_box.rowconfigure(1, weight=1)
 
         #Put it in the main grid
-        self.frame_list_box.grid(pady=5, row=1, column=1)
+        self.frame_list_box.grid(pady=5, row=1, column=1,sticky="nsew")
 
 
     def render_scroll_frame_panels(self):
@@ -229,7 +307,7 @@ class App_new(Frame):
             self.my_list_panels.insert(END, str(line.get_id()) + " - " + line.get_name())
 
         #Put it in the grid
-        self.my_list_panels.grid(pady=5, row=1, column=1)
+        self.my_list_panels.grid(pady=5, row=1, column=1,sticky="nsew")
         #Adding the evnt to navigate
         self.my_list_panels.bind('<Button-1>', self.event_panels)
 
@@ -250,7 +328,7 @@ class App_new(Frame):
         self.frame_list_box.rowconfigure(1, weight=1)
 
         #Put it in the main grid
-        self.frame_list_box.grid(pady=5, row=1, column=1)
+        self.frame_list_box.grid(pady=5, row=1, column=1,sticky="nsew")
 
 
     #----------------------------------------------------------------------------------
@@ -258,29 +336,31 @@ class App_new(Frame):
 
     def event_panels(self,event):
         cs = self.my_list_panels.curselection()
+        self.item_selected = True
+        self.label_front_button.config(text="See assemblies in : \n " + self.my_list_panels.get(cs))
+        self.label_skip_button.config(text="You want to skip: " + self.my_list_panels.get(cs))
+        self.label_start_here_button.config(text="You want to start in: " + self.my_list_panels.get(cs))
         for i in cs:
-
-            self.control_back = self.control_back + 1
             self.id_panel = i
             print(self.list_global.globalList[i])
-            self.clear_frame()
-            self.render_scroll_frame_assemblies()
+
 
     def event_parts(self,event):
         cs = self.my_list_parts.curselection()
+        self.item_selected = True
         for i in cs:
             self.id_part = i
             print(self.list_global.globalList[self.id_panel].list_assemblies[self.id_assemblie].list_parts[i])
 
     def event_assemblies(self,event):
         cs = self.my_list_assemblies.curselection()
+        self.item_selected = True
+        self.label_front_button.config(text=" See parts in :  \n " + self.my_list_assemblies.get(cs))
+        self.label_skip_button.config(text="You want to skip: " + self.my_list_assemblies.get(cs))
+        self.label_start_here_button.config(text="You want to start in: " + self.my_list_assemblies.get(cs))
         for i in cs:
-
-            self.control_back = self.control_back + 1
             self.id_assemblie =i
             print(self.list_global.globalList[self.id_panel].list_assemblies[i])
-            self.clear_frame()
-            self.render_scroll_frame_parts()
 
 
     #----------------------------------------------------------------------------------

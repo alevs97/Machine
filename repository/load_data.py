@@ -14,7 +14,9 @@ class LoadData:
     _id_panel = 0
     _id_assemblie = 0
     _id_part = 0
+
     _listPanels = []
+    _job_description = ""
 
 
     def load_data_json(self,path = None):
@@ -30,7 +32,7 @@ class LoadData:
             with open(path) as file:
                 data = json.load(file)
                 self.process_data_json_iterator_2(data)
-                return self._listPanels
+                return self._listPanels, self._job_description
 
 
         return "Error"
@@ -44,10 +46,16 @@ class LoadData:
                     element_dict = next(iterator_data)
                 except StopIteration:
                     break
+
+                if (element_dict[0] == 'JobDescription'):
+                    self._job_description = element_dict[1]
+
                 if (element_dict[0] == 'Name') and (element_dict[1].find("Wall") != -1):
 
                     element_assemblies = next(iterator_data)
                     self.add_to_list_panels(element_assemblies[1])
+
+
                 else:
                     self.process_data_json_iterator_2(element_dict[1])
 
