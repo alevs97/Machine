@@ -23,4 +23,3 @@ class ScrollableFrame(ttk.Frame):
 
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
-

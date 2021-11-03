@@ -1,10 +1,14 @@
 import time
-from interface.App_new import App_new
+from tkinter.tix import Tk
+
+from interface.App_new import AppNew
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from repository.load_data import LoadData
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
+
+from interface.App_new import AppNew
 
 # from procedures.services import Services
 """
@@ -45,7 +49,22 @@ if __name__ == "__main__":
     root.geometry(str(width) + "x" + str(height))
 
 
-    my_app = App_new(root)
+    """
+    
+    # App Refactor
+    appRefactor = AppRefactor()
+    appRefactor.pack(fill="both", expand=1)
+    appRefactor.main_frame()
+    appRefactor.config(bg="lightblue")
+    appRefactor.master.title("Hola App")
+
+
+    appRefactor.mainloop()
+
+    """
+
+    
+    my_app = AppNew(root)
     my_app.pack(fill="both", expand=1)
     #my_app.config(bg="lightblue")
     time.sleep(1)
@@ -54,20 +73,5 @@ if __name__ == "__main__":
     my_app.main_frame()
     my_app.mainloop()
 
-    """
-
-    # create the application
-    myapp = App()
-
-    #Title app
-    myapp.master.title("My Do-Nothing Application")
-
-    #Screen
-    myapp.screen()
-    #myapp.charge_data()
-    myapp.grid()
 
 
-    # start the program
-    myapp.mainloop()
-    """
