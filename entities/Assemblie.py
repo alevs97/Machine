@@ -9,6 +9,13 @@ class Assemblie:
         self.name = name
         self.id = id
 
+    def to_dict(self):
+        return {
+            "Id": self.id,
+            "Name": self.name,
+            "Assemblies": [part.to_dict() for part in self.list_parts]
+        }
+
     def add_list_parts(self, list_parts):
         self.list_parts = list_parts
 

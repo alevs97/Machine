@@ -10,6 +10,13 @@ class Panel:
         self.name = name
         self.id = id
 
+    def to_dict(self):
+        return {
+            "Id": self.id,
+            "Name": self.name,
+            "Assemblies": [assemble.to_dict() for assemble in self.list_assemblies]
+        }
+
     def add_list_assemblies(self,list_assemblies):
         self.list_assemblies = list_assemblies
 

@@ -35,7 +35,7 @@ class Part:
         self.processed = processed
         self.id = id
 
-    def to_Dict(self):
+    def to_dict(self):
         """
         Description:
         Method to express this entity in form of a Dictionary
@@ -44,12 +44,12 @@ class Part:
         Dictionary -- return the atributes
         """
         return {
+            'Id': self.id,
             'Name': self.name,
             'WoodType': self.woodType,
             'Height': self.height,
             'PrintSections': self.printSections,
             'Processed': self.processed,
-            'id': self.id
         }
 
     # getter method
