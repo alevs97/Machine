@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter.constants import VERTICAL, END
 
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
-from procedures.services import Services
+from procedures.Services import Services
 
 
 class AppNew(tk.Frame):
