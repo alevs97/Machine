@@ -65,13 +65,13 @@ class LoadData:
                 self.process_data_json_iterator_2(element)
 
 
-    def add_to_list_panels(self,list_panels):
-        list_retrieve = list()
-        list_assemblies = list()
-        for panel_dict in list_panels:
+    def add_to_list_panels(self,list_panels, list_retrieve = None):
 
-            new_panel = Panel(id = self._id_panel + 1)
+        for panel_dict in list_panels:
             self._id_panel = self._id_panel + 1
+
+            if (list_retrieve is None) or (len(list_retrieve) != 0):
+                list_retrieve = []
 
             panel = iter(panel_dict.items())
             while True:
@@ -85,25 +85,26 @@ class LoadData:
 
 
                     if element[0] == "Assemblies":
+                        new_panel_1 = Panel(id=self._id_panel)
 
-                        list_assemblies = copy.deepcopy(self.add_to_list_assemblies(element[1]))
+                        list_retrieve = copy.deepcopy(self.add_to_list_assemblies(element[1]))
 
-                        element = next(panel)
+                        element_1 = next(panel)
 
-                        if element[0] == "Parts":
+                        panel_assemblie_a = copy.deepcopy(self.add_panel_parts_assemblie(element_1[1]))
+                        list_retrieve.append(panel_assemblie_a)
+                        new_panel_1.add_list_assemblies(list_retrieve)
+                        self._listPanels.append(new_panel_1)
 
-                            panel_assemblie_a = copy.deepcopy(self.add_panel_parts_assemblie(element[1]))
-                            list_assemblies.append(panel_assemblie_a)
-                            new_panel.add_list_assemblies(list_assemblies)
-                            break
 
                     if element[0] == "Parts":
+                        new_panel_2 = Panel(id=self._id_panel)
+
                         panel_assemblie_b = copy.deepcopy(self.add_panel_parts_assemblie(element[1]))
                         list_retrieve.append(panel_assemblie_b)
-                        new_panel.add_list_assemblies(list_retrieve)
+                        new_panel_2.add_list_assemblies(list_retrieve)
+                        self._listPanels.append(new_panel_2)
 
-
-            self._listPanels.append(new_panel)
 
     def add_panel_parts_assemblie(self, list_parts):
         assemblie_panel = Assemblie("Panel Assemble",self._id_assemblie + 1)
@@ -113,8 +114,9 @@ class LoadData:
         return assemblie_panel
 
 
-    def add_to_list_assemblies(self,list_assemblies):
-        list_retrieve = []
+    def add_to_list_assemblies(self,list_assemblies, list_retrieve = None ):
+        if (list_retrieve is None) or (len(list_retrieve) != 0):
+            list_retrieve = []
         for assemblie_dict in list_assemblies:
             assemblie = iter(assemblie_dict.items())
             while True:
@@ -134,8 +136,9 @@ class LoadData:
 
 
 
-    def add_to_list_parts(self, list_parts):
-        list_retrieve = []
+    def add_to_list_parts(self, list_parts, list_retrieve = None):
+        if (list_retrieve is None) or (len(list_retrieve) != 0):
+            list_retrieve = list()
         for part in list_parts:
 
             printSection = part["PrintSections"] if "PrintSections" in part else None
