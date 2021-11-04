@@ -12,6 +12,7 @@ class Services:
 
 
         if index_frame == 0:
+
             list_panels = self.list_global.globalList
             panel = self.list_global.globalList[id_panel]
 
@@ -22,8 +23,16 @@ class Services:
             list_assemblies = self.list_global.globalList[id_panel].list_assemblies
             assemblie = self.list_global.globalList[id_panel].list_assemblies[id_assemblie]
 
-            filter_list = list(filter(lambda x: x.get_id() != assemblie.get_id(), list_assemblies))
-            self.list_global.globalList[id_panel].list_assemblies = copy.deepcopy(filter_list)
+            if len(list_assemblies) != 0:
+                list_panels = self.list_global.globalList
+                panel = self.list_global.globalList[id_panel]
+
+                filter_list = list(filter(lambda x: x.get_id() != panel.get_id(), list_panels))
+                self.list_global.globalList = copy.deepcopy(filter_list)
+            else:
+
+                filter_list = list(filter(lambda x: x.get_id() != assemblie.get_id(), list_assemblies))
+                self.list_global.globalList[id_panel].list_assemblies = copy.deepcopy(filter_list)
 
         elif index_frame == 2:
             list_parts = self.list_global.globalList[id_panel].list_assemblies[id_assemblie].list_parts
