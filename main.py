@@ -1,9 +1,10 @@
 import time
 from tkinter.tix import Tk
 
-from interface.App_new import AppNew
+from interface.NewInterface import NewInterface
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from repository.load_data import LoadData
+from repository.SafeData import SafeData
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
@@ -42,13 +43,19 @@ if __name__ == "__main__":
             print(" ")
 
 
+    safe = SafeData()
+    safe.write_file()
 
     root = Tk()
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
     root.geometry(str(width) + "x" + str(height))
 
+    interface = NewInterface(root)
+    interface.pack(fill="both", expand=1)
 
+    interface.main_frame()
+    interface.mainloop()
     """
     
     # App Refactor
@@ -63,15 +70,7 @@ if __name__ == "__main__":
 
     """
 
-    
-    my_app = AppNew(root)
-    my_app.pack(fill="both", expand=1)
-    #my_app.config(bg="lightblue")
-    time.sleep(1)
 
-    my_app.master.title("My Do-Nothing Application")
-    my_app.main_frame()
-    my_app.mainloop()
 
 
 
