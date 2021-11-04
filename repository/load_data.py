@@ -32,7 +32,7 @@ class LoadData:
             with open(path) as file:
                 data = json.load(file)
                 self.process_data_json_iterator_2(data)
-                return self._listPanels, self._job_description
+                return self._listPanels
 
 
         return "Error"
@@ -47,63 +47,55 @@ class LoadData:
                 except StopIteration:
                     break
 
-                if (element_dict[0] == 'JobDescription'):
-                    self._job_description = element_dict[1]
-
-                if (element_dict[0] == 'Name') and (element_dict[1].find("Wall") != -1):
-
-                    element_assemblies = next(iterator_data)
-                    self.add_to_list_panels(element_assemblies[1])
-
-
+                if element_dict[0] == "Panels":
+                    self.add_to_list_panels(element_dict[1])
                 else:
                     self.process_data_json_iterator_2(element_dict[1])
-
 
         elif isinstance(data, list):
             for element in data:
                 self.process_data_json_iterator_2(element)
 
 
-    def add_to_list_panels(self,list_panels, list_retrieve = None):
+    def add_to_list_panels(self, list_panels, list_retrieve = None):
 
         for panel_dict in list_panels:
-            self._id_panel = self._id_panel + 1
 
             if (list_retrieve is None) or (len(list_retrieve) != 0):
                 list_retrieve = []
 
-            panel = iter(panel_dict.items())
+            self._id_panel = self._id_panel + 1
+            iter_panel = iter(panel_dict.items())
             while True:
                 try:
-                    element_dict =next(panel)
+                    element = next(iter_panel)
                 except StopIteration:
                     break
 
-                if(element_dict[0] == "Name") and (element_dict[1].find("Panel") != -1):
-                    element = next(panel)
+                if element[0] == "Name":
 
+                    new_panel = Panel(name=element[1],id = self._id_panel)
+                    element = next(iter_panel)
 
                     if element[0] == "Assemblies":
-                        new_panel_1 = Panel(id=self._id_panel)
 
                         list_retrieve = copy.deepcopy(self.add_to_list_assemblies(element[1]))
 
-                        element_1 = next(panel)
+                        element_1 = next(iter_panel)
 
                         panel_assemblie_a = copy.deepcopy(self.add_panel_parts_assemblie(element_1[1]))
                         list_retrieve.append(panel_assemblie_a)
-                        new_panel_1.add_list_assemblies(list_retrieve)
-                        self._listPanels.append(new_panel_1)
-
+                        new_panel.add_list_assemblies(list_retrieve)
+                        self._listPanels.append(new_panel)
 
                     if element[0] == "Parts":
-                        new_panel_2 = Panel(id=self._id_panel)
+
 
                         panel_assemblie_b = copy.deepcopy(self.add_panel_parts_assemblie(element[1]))
                         list_retrieve.append(panel_assemblie_b)
-                        new_panel_2.add_list_assemblies(list_retrieve)
-                        self._listPanels.append(new_panel_2)
+                        new_panel.add_list_assemblies(list_retrieve)
+                        self._listPanels.append(new_panel)
+
 
 
     def add_panel_parts_assemblie(self, list_parts):
@@ -115,10 +107,14 @@ class LoadData:
 
 
     def add_to_list_assemblies(self,list_assemblies, list_retrieve = None ):
+
         if (list_retrieve is None) or (len(list_retrieve) != 0):
             list_retrieve = []
+
         for assemblie_dict in list_assemblies:
             assemblie = iter(assemblie_dict.items())
+
+
             while True:
                 try:
                     element_dict =next(assemblie)

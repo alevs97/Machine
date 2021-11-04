@@ -133,7 +133,7 @@ class NewInterface(tk.Frame):
         # Creating the listBox
         self.my_list_panels = tk.Listbox(self.widget_listbox_panel)
         for line in self.list_global.globalList:
-            self.my_list_panels.insert(END, str(line.get_id()) + " - " + line.get_name())
+            self.my_list_panels.insert(END, " - " + str(line.get_name()))
 
         # Put it in the grid
         self.my_list_panels.grid(pady=5, row=1, column=1, sticky="nsew")

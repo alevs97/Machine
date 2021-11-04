@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     """
 
-    global_list.globalList, global_list.job_description = data.load_data_json('data.json')
+    global_list.globalList= data.load_data_json('NewFile.json')
 
     # list=data.load_data_json('6_Walls.json')
     print("###############")
@@ -56,6 +56,7 @@ if __name__ == "__main__":
 
     interface.main_frame()
     interface.mainloop()
+
     """
     
     # App Refactor

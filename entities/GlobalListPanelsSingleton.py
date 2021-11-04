@@ -8,7 +8,6 @@ class GlobalListPanelsSingleton:
 
         def __init__(self):
             self.globalList = []
-            self.job_description = ""
 
         def __str__(self):
             return "Global List =" + self.globalList
