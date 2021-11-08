@@ -1,3 +1,5 @@
+import threading
+
 
 class GlobalListPanelsSingleton:
 
@@ -13,14 +15,16 @@ class GlobalListPanelsSingleton:
             return "Global List =" + self.globalList
 
     instante = None
+    _lock = threading.Lock()
 
     def __new__(cls):
         """
         Create object
         """
-        if not GlobalListPanelsSingleton.instante:
-            GlobalListPanelsSingleton.instante = GlobalListPanelsSingleton.__GlobalListPanels()
-        return GlobalListPanelsSingleton.instante
+        with cls._lock:
+            if not GlobalListPanelsSingleton.instante:
+                GlobalListPanelsSingleton.instante = GlobalListPanelsSingleton.__GlobalListPanels()
+            return GlobalListPanelsSingleton.instante
 
     def __getattr__(self, global_list):
         return getattr(self.instante, global_list)

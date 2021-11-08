@@ -4,6 +4,7 @@ from tkinter.constants import VERTICAL, END
 
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from procedures.Services import Services
+from repository.SafeData import SafeData
 
 
 class NewInterface(tk.Frame):
@@ -12,6 +13,7 @@ class NewInterface(tk.Frame):
         super().__init__(container, *args, **kwargs)
         # External services
         self.list_global = GlobalListPanelsSingleton()
+        self.safe = SafeData()
         self.service = Services()
 
         # Aux variables
@@ -63,17 +65,7 @@ class NewInterface(tk.Frame):
     # ------------------Frames-first-row---------------------
     def frame_information_panel(self):
         frame_information = tk.Frame(self)
-        """
-        ttk.Separator(frame_information, orient=tk.HORIZONTAL).grid(column=1, row=4, sticky='we')
-        ttk.Label(frame_information, textvariable=self.laser, text="asdfas").grid(column=1, row=6, pady=5)
-        ttk.Label(frame_information, textvariable=self.lumber).grid(column=2, row=1, pady=5)
-        ttk.Label(frame_information, textvariable=self.remain).grid(column=2, row=2, pady=5)
-        ttk.Separator(frame_information, orient=tk.HORIZONTAL).grid(column=2, row=3, sticky='we')
-        ttk.Label(frame_information, textvariable=self.part).grid(column=2, row=4, pady=5)
-        ttk.Label(frame_information, textvariable=self.partheight).grid(column=2, row=5, pady=5)
-        ttk.Separator(frame_information, orient=tk.HORIZONTAL).grid(column=2, row=6, sticky='we')
-        ttk.Label(frame_information, textvariable=self.message).grid(column=2, row=7, pady=5)
-        """
+
         ttk.Separator(frame_information, orient=tk.HORIZONTAL).grid(column=1, row=4, sticky='we')
         tk.Label(frame_information, text="asdfas").grid(column=1, row=6, pady=5)
         tk.Label(frame_information, text="dasdfas").grid(column=2, row=1, pady=5)
@@ -127,13 +119,16 @@ class NewInterface(tk.Frame):
         self.widget_listbox_panel = ttk.Frame(self, padding=15)
 
         # Label of where are you
-        # TODO: ADD Label where are you(Project)
         tk.Label(self.widget_listbox_panel, text="List of PANELS to process ").grid(pady=5, row=0, column=1)
 
         # Creating the listBox
         self.my_list_panels = tk.Listbox(self.widget_listbox_panel)
         for line in self.list_global.globalList:
-            self.my_list_panels.insert(END, " - " + str(line.get_name()))
+            label_processed = "Skip" if line.get_processed() else ""
+            self.my_list_panels.insert(END, " - " + str(line.get_name()) + " " + label_processed)
+
+            if line.get_processed():
+                self.my_list_panels.itemconfig(END, {'bg': 'red'})
 
         # Put it in the grid
         self.my_list_panels.grid(pady=5, row=1, column=1, sticky="nsew")
@@ -192,15 +187,18 @@ class NewInterface(tk.Frame):
         panel = self.list_global.globalList[self.id_panel]
 
         # Label of where are you
-        # TODO: ADD Label where are you(Panel)
         tk.Label(self.widget_listbox_assemblies,
-                 text="List of ASSEMBLIES to process in : \n " + str(panel.get_id()) + "-" + str(panel.get_name())). \
+                 text="List of ASSEMBLIES to process in : \n " + "-" + str(panel.get_name())). \
             grid(pady=5, row=0, column=1)
 
         # Creating the listbox
         self.my_list_assemblies = tk.Listbox(self.widget_listbox_assemblies)
         for line in panel.list_assemblies:
-            self.my_list_assemblies.insert(END, str(line.get_id()) + " - " + line.get_name())
+            label_processed = "Skip" if line.get_processed() else ""
+            self.my_list_assemblies.insert(END, str(line.get_id()) + " - " + line.get_name() + " " + label_processed)
+
+            if line.get_processed():
+                self.my_list_assemblies.itemconfig(END, {'bg': 'red'})
 
         # Punt it in the grid
         self.my_list_assemblies.grid(pady=5, row=1, column=1, sticky="nsew")
@@ -264,16 +262,18 @@ class NewInterface(tk.Frame):
             assemble = panel.list_assemblies[self.id_assemble]
 
         # Label of ahere are you
-        # TODO: ADD Label where are you(Part/Assemble/Panel )
         tk.Label(self.widget_listbox_parts,
-                 text="List of PARTS to process in :\n" + str(panel.get_id()) + "-" + str(panel.get_name()) + "/"
+                 text="List of PARTS to process in :\n" + "-" + str(panel.get_name()) + "/"
                       + str(assemble.get_id()) + "-" + str(assemble.get_name())).grid(pady=5, row=0, column=1)
 
         # Creating the listbox
         self.my_list_parts = tk.Listbox(self.widget_listbox_parts)
         for line in assemble.list_parts:
+            label_processed = "Skip" if line.get_processed() else ""
             self.my_list_parts.insert(END, str(line.get_id()) + " - " + line.get_name() + " - "
-                                      + line.get_wood_type() + "x" + str(line.height))
+                                      + line.get_wood_type() + "x" + str(line.height) + " " + label_processed)
+            if line.get_processed():
+                self.my_list_parts.itemconfig(END, {'bg': 'red'})
 
         # Put it in the grid
         self.my_list_parts.grid(pady=5, row=1, column=1, sticky="nsew")
@@ -346,16 +346,6 @@ class NewInterface(tk.Frame):
             self.id_assemble = i
             print(self.list_global.globalList[self.id_panel].list_assemblies[i])
 
-    def render_listbox(self):
-        try:
-            self.restart_listbox()
-        except IndexError:
-            self.id_panel = 0
-            self.id_assemble = 0
-            self.id_part = 0
-
-            self.restart_listbox()
-
     def restart_listbox(self):
         self.widget_listbox_panel.destroy()
         self.frame_listbox_panels()
@@ -370,15 +360,17 @@ class NewInterface(tk.Frame):
     def skip_button(self, index_frame):
         try:
             self.service.skip_here(self.id_panel, self.id_assemble, self.id_part, index_frame)
+            self.safe.write_file()
         except TypeError:
             print("Service Skip Unavailable")
         else:
-            self.render_listbox()
+            self.restart_listbox()
 
     def start_here_button(self, index_frame):
         try:
             self.service.start_here(self.id_panel, self.id_assemble, self.id_part, index_frame)
+            self.safe.write_file()
         except TypeError:
             print("Service Start Unavailable")
         else:
-            self.render_listbox()
+            self.restart_listbox()

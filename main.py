@@ -5,6 +5,7 @@ from interface.NewInterface import NewInterface
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
 from repository.load_data import LoadData
 from repository.SafeData import SafeData
+from procedures.Services import Services
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
@@ -46,6 +47,11 @@ if __name__ == "__main__":
     safe = SafeData()
     safe.write_file()
 
+    #services =  Services()
+    #services.skip_here(1,2,3,0)
+
+
+
     root = Tk()
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
@@ -56,6 +62,7 @@ if __name__ == "__main__":
 
     interface.main_frame()
     interface.mainloop()
+
 
     """
     

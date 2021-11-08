@@ -3,11 +3,12 @@ class Assemblie:
     list_parts = []
 
     def __str__(self):
-        return "Nombre: "+ str(self.name) +", id: " +str(self.id)
+        return "Nombre: "+ str(self.name) + ", id: " +str(self.id) + "processed: " +str(self.processed)
 
-    def __init__(self, name, id=0):
+    def __init__(self, name, id=0, processed=False):
         self.name = name
         self.id = id
+        self.processed = processed
 
     def to_dict(self):
         return {
@@ -38,5 +39,13 @@ class Assemblie:
     # setter method
     def set_name(self, x):
         self.name = x
+
+    # getter method
+    def get_processed(self):
+        return self.processed
+
+    # setter method
+    def set_processed(self, x):
+        self.processed = x
 
 

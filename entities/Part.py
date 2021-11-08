@@ -91,3 +91,11 @@ class Part:
     # setter method
     def set_height(self, x):
         self.height = x
+
+    # getter method
+    def get_processed(self):
+        return self.processed
+
+    # setter method
+    def set_processed(self, x):
+        self.processed = x
