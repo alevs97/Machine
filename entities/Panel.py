@@ -14,7 +14,6 @@ class Panel:
 
     def to_dict(self):
         return {
-            "Id": self.id,
             "Name": self.name,
             "Assemblies": [assemble.to_dict() for assemble in self.list_assemblies]
         }

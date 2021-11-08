@@ -1,8 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.constants import VERTICAL, END
+from tkinter.ttk import Button
 
+from pathlib import Path
+
+from entities.Assemblie import Assemblie
 from entities.GlobalListPanelsSingleton import GlobalListPanelsSingleton
+from entities.Panel import Panel
 from procedures.Services import Services
 from repository.SafeData import SafeData
 
@@ -17,9 +22,10 @@ class NewInterface(tk.Frame):
         self.service = Services()
 
         # Aux variables
-        self.id_panel = 0
-        self.id_assemble = 0
-        self.id_part = 0
+        self.id_panel = None
+        self.id_assemble = None
+        self.id_part = None
+        self.index_frame = 0
 
         # General widgets
         self.widget_listbox_panel = None
@@ -50,6 +56,7 @@ class NewInterface(tk.Frame):
         self.frame_listbox_panels()
         self.frame_listbox_assemblies()
         self.frame_listbox_parts()
+        self.frame_buttons_skip_start_here()
 
         # Distribution in the widgets
         self.rowconfigure(0, weight=1)
@@ -61,6 +68,7 @@ class NewInterface(tk.Frame):
         self.columnconfigure(2, weight=1)
         self.columnconfigure(3, weight=1)
         self.columnconfigure(4, weight=1)
+        self.columnconfigure(5, weight=1)
 
     # ------------------Frames-first-row---------------------
     def frame_information_panel(self):
@@ -86,6 +94,8 @@ class NewInterface(tk.Frame):
 
     def frame_buttons(self):
         widget_frame_button = tk.Frame(self)
+
+
 
         # Widgets
         tk.Button(widget_frame_button, text="Pause").grid(pady=5, padx=5, row=0, column=1, sticky="nsew")
@@ -143,22 +153,6 @@ class NewInterface(tk.Frame):
         # Communicate back to the scrollbar
         self.my_list_panels.config(yscrollcommand=scrollbar.set)
 
-        # Frame button skip and start here
-        frame_skip_start_here = ttk.Frame(self.widget_listbox_panel)
-        frame_skip_start_here.grid(pady=10, row=2, column=1, sticky="nsew")
-
-        tk.Button(frame_skip_start_here, text="Skip", command=lambda: self.skip_button(0)).grid(row=0, column=0,
-                                                                                                sticky="nsew")
-        tk.Button(frame_skip_start_here, text="Start Here", command=lambda: self.start_here_button(0)).\
-            grid(row=0, column=1, sticky="nsew")
-
-        # Dimension columns
-        frame_skip_start_here.columnconfigure(0, weight=1)
-        frame_skip_start_here.columnconfigure(1, weight=1)
-
-        # Dimension rows
-        frame_skip_start_here.rowconfigure(0, weight=1)
-
         # Dimension columns
         self.widget_listbox_panel.columnconfigure(0, weight=0)
         self.widget_listbox_panel.columnconfigure(1, weight=1)
@@ -184,7 +178,11 @@ class NewInterface(tk.Frame):
         self.widget_listbox_assemblies = ttk.Frame(self, padding=15)
 
         # Variable
-        panel = self.list_global.globalList[self.id_panel]
+        if self.id_panel == None:
+            panel = Panel(id=0, name="No Panel Selected", processed=False)
+        else:
+            panel = self.list_global.globalList[self.id_panel]
+
 
         # Label of where are you
         tk.Label(self.widget_listbox_assemblies,
@@ -194,7 +192,7 @@ class NewInterface(tk.Frame):
         # Creating the listbox
         self.my_list_assemblies = tk.Listbox(self.widget_listbox_assemblies)
         for line in panel.list_assemblies:
-            label_processed = "Skip" if line.get_processed() else ""
+            label_processed = "Unprocessed" if line.get_processed() else ""
             self.my_list_assemblies.insert(END, str(line.get_id()) + " - " + line.get_name() + " " + label_processed)
 
             if line.get_processed():
@@ -212,22 +210,6 @@ class NewInterface(tk.Frame):
 
         # Communicate back to the scrollbar
         self.my_list_assemblies.config(yscrollcommand=scrollbar.set)
-
-        # Frame button skip and start here
-        frame_skip_start_here = ttk.Frame(self.widget_listbox_assemblies)
-        frame_skip_start_here.grid(pady=10, row=2, column=1, sticky="nsew")
-
-        tk.Button(frame_skip_start_here, text="Skip", command=lambda: self.skip_button(1)).grid(row=0, column=0,
-                                                                                                sticky="nsew")
-        tk.Button(frame_skip_start_here, text="Start Here", command=lambda: self.start_here_button(1))\
-            .grid(row=0, column=1, sticky="nsew")
-
-        # Dimension columns
-        frame_skip_start_here.columnconfigure(0, weight=1)
-        frame_skip_start_here.columnconfigure(1, weight=1)
-
-        # Dimension rows
-        frame_skip_start_here.rowconfigure(0, weight=1)
 
         # Dimension columns
         self.widget_listbox_assemblies.columnconfigure(0, weight=0)
@@ -253,23 +235,26 @@ class NewInterface(tk.Frame):
         self.widget_listbox_parts = ttk.Frame(self, padding=15)
 
         # Variable
-        panel = self.list_global.globalList[self.id_panel]
-        try:
+        if (self.id_panel == None) and (self.id_assemble == None):
+            assemble = Assemblie(id=0, name="No Assemblie Selected", processed=False)
+            panel = Panel(id=0, name="No Panel Selected", processed=False)
+        elif self.id_assemble == None:
+            assemble = Assemblie(id=0, name="No Assemblie Selected", processed=False)
+            panel = self.list_global.globalList[self.id_panel]
+        else:
+            panel = self.list_global.globalList[self.id_panel]
             assemble = panel.list_assemblies[self.id_assemble]
-        except IndexError:
-            print("Index Error")
-            self.id_assemble = 0
-            assemble = panel.list_assemblies[self.id_assemble]
+
 
         # Label of ahere are you
         tk.Label(self.widget_listbox_parts,
-                 text="List of PARTS to process in :\n" + "-" + str(panel.get_name()) + "/"
+                 text="List of PARTS to process in :\n" + "-" + str(panel.get_name()) + "  /  "
                       + str(assemble.get_id()) + "-" + str(assemble.get_name())).grid(pady=5, row=0, column=1)
 
         # Creating the listbox
         self.my_list_parts = tk.Listbox(self.widget_listbox_parts)
         for line in assemble.list_parts:
-            label_processed = "Skip" if line.get_processed() else ""
+            label_processed = "Unprocessed" if line.get_processed() else ""
             self.my_list_parts.insert(END, str(line.get_id()) + " - " + line.get_name() + " - "
                                       + line.get_wood_type() + "x" + str(line.height) + " " + label_processed)
             if line.get_processed():
@@ -288,22 +273,6 @@ class NewInterface(tk.Frame):
         # Communicate back to the scrollbar
         self.my_list_parts.config(yscrollcommand=scrollbar.set)
 
-        # Frame button skip and start here
-        frame_skip_start_here = ttk.Frame(self.widget_listbox_parts)
-        frame_skip_start_here.grid(pady=10, row=2, column=1, sticky="nsew")
-
-        tk.Button(frame_skip_start_here, text="Skip", command=lambda: self.skip_button(2)).grid(row=0, column=0,
-                                                                                                sticky="nsew")
-        tk.Button(frame_skip_start_here, text="Start Here", command=lambda: self.start_here_button(2))\
-            .grid(row=0, column=1, sticky="nsew")
-
-        # Dimension columns
-        frame_skip_start_here.columnconfigure(0, weight=1)
-        frame_skip_start_here.columnconfigure(1, weight=1)
-
-        # Dimension rows
-        frame_skip_start_here.rowconfigure(0, weight=1)
-
         # Dimesion columns
         self.widget_listbox_parts.columnconfigure(0, weight=0)
         self.widget_listbox_parts.columnconfigure(1, weight=1)
@@ -316,19 +285,44 @@ class NewInterface(tk.Frame):
         # Put it in the main grid
         self.widget_listbox_parts.grid(pady=5, row=1, column=3, rowspan=2, sticky="nsew")
 
-        # ------------------Events-ListBox---------------------
+    def frame_buttons_skip_start_here(self):
+        widget_frame_button = ttk.Frame(self)
 
+        # Widgets
+        ttk.Separator(widget_frame_button, orient=tk.HORIZONTAL).grid(column=1, row=0, sticky='we')
+        tk.Button(widget_frame_button, text="Unprocessed", command=self.unprocess).grid(pady=5, padx=5, row=1, column=1, sticky="nsew")
+        tk.Button(widget_frame_button, text="Processed", command=self.process).grid(pady=5, padx=5, row=3, column=1, sticky="nsew")
+        ttk.Separator(widget_frame_button, orient=tk.HORIZONTAL).grid(column=1, row=4, sticky='we')
+
+
+        # Distribution
+        widget_frame_button.rowconfigure(0, weight=1)
+        widget_frame_button.rowconfigure(1, weight=1)
+        widget_frame_button.rowconfigure(2, weight=1)
+        widget_frame_button.rowconfigure(3, weight=1)
+        widget_frame_button.rowconfigure(4, weight=1)
+
+        widget_frame_button.columnconfigure(0, weight=1)
+        widget_frame_button.columnconfigure(1, weight=1)
+        widget_frame_button.columnconfigure(2, weight=1)
+
+        widget_frame_button.grid(pady=5, row=1, column=4, rowspan=2, sticky="nsew")
+
+        # ------------------Events-ListBox---------------------
     def event_panels(self, event):
         cs = self.my_list_panels.curselection()
 
+        self.id_assemble = None
         self.widget_listbox_assemblies.destroy()
         self.frame_listbox_assemblies()
 
+        self.id_part = None
         self.widget_listbox_parts.destroy()
         self.frame_listbox_parts()
 
         for i in cs:
             self.id_panel = i
+            self.index_frame = 0
             print(self.list_global.globalList[i])
 
     def event_parts(self, event):
@@ -336,14 +330,19 @@ class NewInterface(tk.Frame):
 
         for i in cs:
             self.id_part = i
+            self.index_frame = 2
             print(self.list_global.globalList[self.id_panel].list_assemblies[self.id_assemble].list_parts[i])
 
     def event_assemblies(self, event):
         cs = self.my_list_assemblies.curselection()
+
+        self.id_part = None
         self.widget_listbox_parts.destroy()
         self.frame_listbox_parts()
+
         for i in cs:
             self.id_assemble = i
+            self.index_frame = 1
             print(self.list_global.globalList[self.id_panel].list_assemblies[i])
 
     def restart_listbox(self):
@@ -357,20 +356,22 @@ class NewInterface(tk.Frame):
         self.frame_listbox_parts()
 
     # --------- Events in Skip and Start Here -------------------------
-    def skip_button(self, index_frame):
+    def process(self):
         try:
-            self.service.skip_here(self.id_panel, self.id_assemble, self.id_part, index_frame)
+            self.service.process_unprocess_here(self.id_panel, self.id_assemble, self.id_part, self.index_frame, False)
             self.safe.write_file()
         except TypeError:
             print("Service Skip Unavailable")
         else:
             self.restart_listbox()
 
-    def start_here_button(self, index_frame):
+    def unprocess(self):
         try:
-            self.service.start_here(self.id_panel, self.id_assemble, self.id_part, index_frame)
+            self.service.process_unprocess_here(self.id_panel, self.id_assemble, self.id_part, self.index_frame, True)
             self.safe.write_file()
         except TypeError:
-            print("Service Start Unavailable")
+            print("Service Skip Unavailable")
         else:
             self.restart_listbox()
+
+
