@@ -10,8 +10,6 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 
-from interface.App_new import AppNew
-
 # from procedures.services import Services
 """
 Main class
@@ -33,6 +31,7 @@ if __name__ == "__main__":
     """
 
     global_list.globalList= data.load_data_json('NewFile.json')
+
 
     # list=data.load_data_json('6_Walls.json')
     print("###############")
@@ -58,9 +57,9 @@ if __name__ == "__main__":
     root.geometry(str(width) + "x" + str(height))
 
     interface = NewInterface(root)
-    interface.pack(fill="both", expand=1)
 
     interface.main_frame()
+    interface.pack(fill="both", expand=1)
     interface.mainloop()
 
 

@@ -1,7 +1,9 @@
+import tkinter
 import tkinter as tk
 from tkinter import ttk
 from tkinter.constants import VERTICAL, END
-from tkinter.ttk import Button
+from PIL import Image, ImageTk
+import tkinter.font as font
 
 from pathlib import Path
 
@@ -45,6 +47,9 @@ class NewInterface(tk.Frame):
         self.message = tk.StringVar()
         self.alert = tk.StringVar()
         self.laser = tk.StringVar()
+
+        # Fonts
+        self.font_frame = font.Font(family='Helvetica', size=12, weight='normal')
 
     def main_frame(self):
 
@@ -95,12 +100,31 @@ class NewInterface(tk.Frame):
     def frame_buttons(self):
         widget_frame_button = tk.Frame(self)
 
+        # Images
+        path_restart = Path("assets/pause.PNG")
+        img_restart = ImageTk.PhotoImage(Image.open(path_restart.absolute()).resize((40, 40)))
+        path_start = Path("assets/start.PNG")
+        img_start = ImageTk.PhotoImage(Image.open(path_start.absolute()).resize((40, 40)))
+        path_continue = Path("assets/continue.PNG")
+        img_continue = ImageTk.PhotoImage(Image.open(path_continue.absolute()).resize((40, 40)))
 
+
+        # Font to Buttons
+        buttonFont = font.Font(family='Helvetica', size=16, weight='normal')
 
         # Widgets
-        tk.Button(widget_frame_button, text="Pause").grid(pady=5, padx=5, row=0, column=1, sticky="nsew")
-        tk.Button(widget_frame_button, text="Start").grid(pady=5, padx=5, row=2, column=1, sticky="nsew")
-        tk.Button(widget_frame_button, text="Continue").grid(pady=5, padx=5, row=4, column=1, sticky="nsew")
+        btn_restart = tkinter.Button(widget_frame_button, image=img_restart, text="Pause", compound="left", font=buttonFont, bg='white')
+        btn_restart.image = img_restart
+        btn_restart.grid(pady=5, padx=5, row=0, column=1, sticky="nsew")
+
+        btn_start = tk.Button(widget_frame_button, image=img_start, text="Start", compound="left", font=buttonFont, bg='white')
+        btn_start.image = img_start
+        btn_start.grid(pady=5, padx=5, row=2, column=1, sticky="nsew")
+
+
+        btn_continue = tk.Button(widget_frame_button, image=img_continue,text="Continue", compound="left", font=buttonFont,bg='white')
+        btn_continue.image = img_continue
+        btn_continue.grid(pady=5, padx=5, row=4, column=1, sticky="nsew")
 
         # Distribution
         widget_frame_button.rowconfigure(0, weight=1)
@@ -112,6 +136,7 @@ class NewInterface(tk.Frame):
         widget_frame_button.columnconfigure(0, weight=1)
         widget_frame_button.columnconfigure(1, weight=1)
         widget_frame_button.columnconfigure(2, weight=1)
+
 
         widget_frame_button.grid(row=0, column=3, sticky="nsew")
 
@@ -129,12 +154,12 @@ class NewInterface(tk.Frame):
         self.widget_listbox_panel = ttk.Frame(self, padding=15)
 
         # Label of where are you
-        tk.Label(self.widget_listbox_panel, text="List of PANELS to process ").grid(pady=5, row=0, column=1)
+        tk.Label(self.widget_listbox_panel, text="List of PANELS to process ", font=self.font_frame).grid(pady=5, row=0, column=1)
 
         # Creating the listBox
-        self.my_list_panels = tk.Listbox(self.widget_listbox_panel)
+        self.my_list_panels = tk.Listbox(self.widget_listbox_panel, font=self.font_frame)
         for line in self.list_global.globalList:
-            label_processed = "Skip" if line.get_processed() else ""
+            label_processed = "Unprocessed" if line.get_processed() else ""
             self.my_list_panels.insert(END, " - " + str(line.get_name()) + " " + label_processed)
 
             if line.get_processed():
@@ -185,12 +210,12 @@ class NewInterface(tk.Frame):
 
 
         # Label of where are you
-        tk.Label(self.widget_listbox_assemblies,
+        tk.Label(self.widget_listbox_assemblies, font=self.font_frame,
                  text="List of ASSEMBLIES to process in : \n " + "-" + str(panel.get_name())). \
             grid(pady=5, row=0, column=1)
 
         # Creating the listbox
-        self.my_list_assemblies = tk.Listbox(self.widget_listbox_assemblies)
+        self.my_list_assemblies = tk.Listbox(self.widget_listbox_assemblies,font=self.font_frame)
         for line in panel.list_assemblies:
             label_processed = "Unprocessed" if line.get_processed() else ""
             self.my_list_assemblies.insert(END, str(line.get_id()) + " - " + line.get_name() + " " + label_processed)
@@ -247,12 +272,12 @@ class NewInterface(tk.Frame):
 
 
         # Label of ahere are you
-        tk.Label(self.widget_listbox_parts,
+        tk.Label(self.widget_listbox_parts, font=self.font_frame,
                  text="List of PARTS to process in :\n" + "-" + str(panel.get_name()) + "  /  "
                       + str(assemble.get_id()) + "-" + str(assemble.get_name())).grid(pady=5, row=0, column=1)
 
         # Creating the listbox
-        self.my_list_parts = tk.Listbox(self.widget_listbox_parts)
+        self.my_list_parts = tk.Listbox(self.widget_listbox_parts,font=self.font_frame)
         for line in assemble.list_parts:
             label_processed = "Unprocessed" if line.get_processed() else ""
             self.my_list_parts.insert(END, str(line.get_id()) + " - " + line.get_name() + " - "
@@ -288,10 +313,26 @@ class NewInterface(tk.Frame):
     def frame_buttons_skip_start_here(self):
         widget_frame_button = ttk.Frame(self)
 
+        # Fonts
+        path_unprocess = Path("assets/unprocess.PNG")
+        img_unprocess = ImageTk.PhotoImage(Image.open(path_unprocess.absolute()).resize((40, 40)))
+        path_process = Path("assets/process.PNG")
+        img_process = ImageTk.PhotoImage(Image.open(path_process.absolute()).resize((40, 40)))
+
+        # Font to Buttons
+        buttonFont = font.Font(family='Helvetica', size=16, weight='normal')
+
         # Widgets
         ttk.Separator(widget_frame_button, orient=tk.HORIZONTAL).grid(column=1, row=0, sticky='we')
-        tk.Button(widget_frame_button, text="Unprocessed", command=self.unprocess).grid(pady=5, padx=5, row=1, column=1, sticky="nsew")
-        tk.Button(widget_frame_button, text="Processed", command=self.process).grid(pady=5, padx=5, row=3, column=1, sticky="nsew")
+
+        btn_unprocess = tk.Button(widget_frame_button, image=img_unprocess,  text="Unprocessed", command=self.unprocess, compound="left", font=buttonFont, bg='white')
+        btn_unprocess.image = img_unprocess
+        btn_unprocess.grid(pady=5, padx=5, row=1, column=1, sticky="nsew")
+
+        btn_process = tk.Button(widget_frame_button, image=img_process, text="Processed", command=self.process, compound="left", font=buttonFont, bg='white')
+        btn_process.image = img_process
+        btn_process.grid(pady=5, padx=5, row=3, column=1, sticky="nsew")
+
         ttk.Separator(widget_frame_button, orient=tk.HORIZONTAL).grid(column=1, row=4, sticky='we')
 
 
