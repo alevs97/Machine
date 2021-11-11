@@ -12,8 +12,8 @@ class Assemblie:
 
     def to_dict(self):
         return {
-            "Id": self.id,
             "Name": self.name,
+            "Processed": self.processed,
             "Assemblies": [part.to_dict() for part in self.list_parts]
         }
 

@@ -77,11 +77,22 @@ class LoadData:
                     new_panel = Panel(name=element[1],id = self._id_panel)
                     element = next(iter_panel)
 
+                    if element[0] == "Processed":
+                        new_panel.set_processed(element[1])
+                        element = next(iter_panel)
+
                     if element[0] == "Assemblies":
 
                         list_retrieve = copy.deepcopy(self.add_to_list_assemblies(element[1]))
 
-                        element_1 = next(iter_panel)
+                        try:
+                            element_1 = next(iter_panel)
+                        except StopIteration:
+                            new_panel.add_list_assemblies(list_retrieve)
+
+                            self._listPanels.append(new_panel)
+                            break
+
 
                         panel_assemblie_a = copy.deepcopy(self.add_panel_parts_assemblie(element_1[1]))
                         list_retrieve.append(panel_assemblie_a)
@@ -121,13 +132,20 @@ class LoadData:
                 except StopIteration:
                     break
 
+
                 new_assemblie = Assemblie(element_dict[1],self._id_assemblie+1)
                 self._id_assemblie = self._id_assemblie + 1
 
-                list_parts = next(assemblie)
-                list = self.add_to_list_parts(list_parts[1])
+                element = next(assemblie)
+
+                if element[0] == "Processed":
+                    new_assemblie.set_processed(element[1])
+                    element = next(assemblie)
+
+                list = self.add_to_list_parts(element[1])
                 new_assemblie.add_list_parts(list)
                 list_retrieve.append(new_assemblie)
+
         return list_retrieve
 
 
@@ -140,7 +158,7 @@ class LoadData:
             printSection = part["PrintSections"] if "PrintSections" in part else None
 
             newPart = Part(name=part["Name"], woodType=part["WoodType"], height=part["Height"], printSections=printSection,
-                           processed=part["Processed"],id=self._id_part + 1)
+                           processed=part["Processed"], id=self._id_part + 1)
             self._id_part = self._id_part + 1
             list_retrieve.append(newPart)
         return list_retrieve

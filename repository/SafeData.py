@@ -13,5 +13,5 @@ class SafeData:
         }
 
     def write_file(self):
-        with open("prueba","w") as writeFile:
+        with open("prueba.json","w") as writeFile:
             json.dump(self._panels_to_dict([panel.to_dict() for panel in self.list_global.globalList]),writeFile)
